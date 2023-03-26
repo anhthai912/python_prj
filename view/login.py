@@ -5,6 +5,11 @@ from tkinter.ttk import *
 from tkinter import filedialog
 from tkinter import messagebox
 import mysql.connector
+
+import sys
+# enter folder location and change \ to //
+sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect')
+# access py_mainform
 from py_mainform import mainform
 
 root = Tk()
