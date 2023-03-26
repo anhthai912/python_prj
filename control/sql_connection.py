@@ -1,4 +1,9 @@
-from connect import get_sql_connection
+import sys
+
+# enter folder location and change \ to //
+sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect')
+# access connect(model)
+from connect import *
 
 
 #những fuction def t để trong """ thì đừng có chạy :)
@@ -8,11 +13,65 @@ person_info = []
 store_creator_info = []
 seller_info = []
 
-def get_product_info(connection):
+
+#                                   PRODUCT
+#insert product
+def insert_product(id: int):
+    cursor = get_sql_connection().cursor()
+
+    # product information
+    product_id = id
+    name = str(input("Enter the product's name: "))
+    type_id = int(input("Enter the product's type id: "))
+    price_per_unit = float(input("Enter the product's price per unit: "))
+    unit_id = int(input("Enter the product's unit id: "))
+    quantity = int(input("Enter the product's quantity: "))
+    date_of_manufacture = str(input("Enter the product's date of manufacture (format: yyyy-mm-dd): "))
+    date_of_expire = str(input("Enter the product's date of expire (format: yyyy-mm-dd): "))
+    description = str(input("Enter the product's description: "))
+
+    # adding product into database
+    query = ("INSERT INTO product (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description) VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
+    data = (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)
+    cursor.execute(query, data)
+    get_sql_connection().commit()
+
+
+# get all of a product information
+def get_product_infos(get_id):
+    cursor = get_sql_connection().cursor()
+    query = f"select * from food_market.product where product_id = {get_id};"
+    cursor.execute(query)
+
+    product_infos = {}
+    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
+        product_infos = {
+                'id': product_id,
+                'name': name,
+                'type_name': type_name,
+                'price_per_unit': price_per_unit,
+                'unit_name': unit_name,
+                'quantity': quantity,
+                'dom': date_of_manufacture,
+                'doe': date_of_expire,
+                'description': description
+            }
+
+    return product_infos
+    
+        
+# get product info
+def get_product_info(get_id:int, select):
+    return get_product_infos(get_id)[select]
+
+
+
+
+def get_all_products_infos(connection):
     cursor = connection.cursor()
     query = "select product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity from product inner join unit on product.unit_id = unit.unit_id inner join type on product.type_id = type.type_id;"
     cursor.execute(query)    
-    for (product_id, name, type_name, price_per_unit, unit_name, quantity) in cursor:
+    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
         product_info.append(
             {
                 'product_id': product_id,
@@ -20,11 +79,15 @@ def get_product_info(connection):
                 'type_name': type_name,
                 'price_per_unit': price_per_unit,
                 'unit_name': unit_name,
-                'quantity': quantity
+                'quantity': quantity,
+                'dom': date_of_manufacture,
+                'doe': date_of_expire,
+                'description': description
             }
         )
 
     return product_info
+
 
 """def get_person_info(connection):
     cursor = connection.cursor()
@@ -116,22 +179,7 @@ def delete_person(connection):
     cursor.execute(query, data)
     connection.commit()"""
 
-def insert_product(connection):
-    cursor = connection.cursor()
-    
-    product_id = int(input("Enter the product's id: "))
-    name = str(input("Enter the product's name: "))
-    type_id = int(input("Enter the product's type id: "))
-    price_per_unit = float(input("Enter the product's price per unit: "))
-    unit_id = int(input("Enter the product's unit id: "))
-    quantity = int(input("Enter the product's quantity: "))
-    date_of_manufacture = str(input("Enter the product's date of manufacture (format: yyyy-mm-dd): "))
-    date_of_expire = str(input("Enter the product's date of expire (format: yyyy-mm-dd): "))
 
-    query = ("INSERT INTO product (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire) VALUE (%s, %s, %s, %s, %s, %s, %s, %s);")
-    data = (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire)
-    cursor.execute(query, data)
-    connection.commit()
     
 """# do not use this function :)
 def delete_product(connection):
@@ -158,9 +206,11 @@ def show_unit(connection):
 
 if __name__ == '__main__':
     connection = get_sql_connection()
-    #print(get_product_info(connection))
-    #insert_product(connection)
-    #show_type(connection)
+    # print(get_product_infos(1))
+    # print(get_product_info(1,"name"))
+    # print(get_all_products_infos(connection))
+    insert_product(11)
+    # show_type(connection)
     #show_unit(connection)
 
     """select max(person_id) from person;

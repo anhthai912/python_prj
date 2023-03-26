@@ -8,7 +8,13 @@ import mysql.connector
 from py_mainform import mainform
 
 root = Tk()
-connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='food_market')
+connection = mysql.connector.connect(
+            # enter mysql server username
+            user='root', 
+            # enter mysql server password
+            password='', 
+            host='127.0.0.1', 
+            database='food_market')
 c = connection.cursor()
 
 # width and height
