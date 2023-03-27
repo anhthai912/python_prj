@@ -8,8 +8,8 @@ from sql_connection import *
 #food market class
 class Food_Market:
     def __init__(self):
-        self.__Products = [1, 2, 3, 4, 5, 6,7 ,8, 9,10]
-        self.__Users = [1, 2, 3, 4, 5, 6,7 ,8, 9,10]
+        self.__Products = [1, 2, 3, 4, 5, 6,7 ,8, 9, 10]
+        self.__Users = [1, 2, 3, 4, 5, 6,7 ,8, 9, 10]
 
     def getProducts(self):
         return self.__Products 

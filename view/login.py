@@ -17,7 +17,7 @@ connection = mysql.connector.connect(
             # enter mysql server username
             user='root', 
             # enter mysql server password
-            password='', 
+            password='thai2003', 
             host='127.0.0.1', 
             database='food_market')
 c = connection.cursor()

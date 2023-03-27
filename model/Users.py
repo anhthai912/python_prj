@@ -12,7 +12,7 @@ class Users:
         Users.last_id += 1
 
         # user input Users and insert into database
-        insert_Users(self.id)
+        insert_user(self.id)
 
         # input id in to Food_Market's Users list
         self.depended_class = depended_class
@@ -21,3 +21,8 @@ class Users:
     # getters
     def get_users_id(self):
         return self.id
+    
+a = Food_Market()
+test = Users(a)
+
+print(a.getUsers())

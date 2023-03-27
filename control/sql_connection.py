@@ -3,7 +3,7 @@ import sys
 # enter folder location and change \ to //
 sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect')
 # access connect(model)
-from connect import *
+from connect import get_sql_connection as sql
 
 
 #những fuction def t để trong """ thì đừng có chạy :)
@@ -13,11 +13,89 @@ person_info = []
 store_creator_info = []
 seller_info = []
 
+#                                   USERS
+# insert user
+def insert_user(id: int):
+    cursor = sql().cursor()
+
+    # user information
+    user_id = id
+    full_name = str(input("Enter full name: "))
+    user_name = str(input("Enter user name: "))
+    password = str(input("Enter password: "))
+    gender = str(input("Enter gender: "))
+    phone_number = int(input("Enter phone numer: "))
+    address = str(input("Enter address: "))
+    user_type = int(input("You are a 1.Customer   2.Seller: "))
+
+    # adding user to data base 
+    query = "INSERT INTO users (user_id, full_name, user_name, password, gender, phone_number, address, type)\
+             VALUE (%s, %s, %s, %s, %s, %s, %s, %s)"
+    data = (user_id, full_name, user_name, password, gender, phone_number, address, user_type)
+    cursor.execute(query, data)
+    sql().commit()
+
+# get all of a single user's information
+def get_user_infos(get_id):
+    cursor = sql().cursor()
+    # sql command
+    query = f"SELECT * FROM food_market.users WHERE user_id ={get_id}"
+    cursor.execute(query)
+
+    # create a dict to store user's infos and return said dict
+    user_infos = {}
+    for (user_id, full_name, user_name, password, gender, phone_number, address, type) in cursor:
+        user_infos = {
+            'id' : user_id,
+            'full_name' : full_name,
+            'user_name' : user_name,
+            'password' : password,
+            'gender' : gender,
+            'phone_number' : phone_number,
+            'address' : address,
+            "user_type" : type
+        }
+    
+    return user_infos
+
+# get a specific info from an user
+def get_user_info(get_id: int, select):
+    # recall the function get_user_infos to create a dict and use 'select' to get a key from said dict
+    return get_user_infos(get_id)[select]
+
+# thg sơn lo nốt cái func này t lười r
+'''
+def get_all_users_infos():
+    cursor = sql().cursor()
+    query = "SELECT product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity\
+             FROM product INNER JOIN unit on product.unit_id = unit.unit_id\
+             INNER JOIN type on product.type_id = type.type_id;"
+    cursor.execute(query)    
+
+    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
+        product_info.append(
+            {
+                'product_id': product_id,
+                'name': name,
+                'type_name': type_name,
+                'price_per_unit': price_per_unit,
+                'unit_name': unit_name,
+                'quantity': quantity,
+                'dom': date_of_manufacture,
+                'doe': date_of_expire,
+                'description': description
+            }
+        )
+
+    return product_info
+'''
+
+
 
 #                                   PRODUCT
 #insert product
 def insert_product(id: int):
-    cursor = get_sql_connection().cursor()
+    cursor = sql().cursor()
 
     # product information
     product_id = id
@@ -31,18 +109,21 @@ def insert_product(id: int):
     description = str(input("Enter the product's description: "))
 
     # adding product into database
-    query = ("INSERT INTO product (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description) VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
+    query = ("INSERT INTO product (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)\
+             VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
     data = (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)
     cursor.execute(query, data)
-    get_sql_connection().commit()
+    sql().commit()
 
 
 # get all of a product information
 def get_product_infos(get_id):
-    cursor = get_sql_connection().cursor()
-    query = f"select * from food_market.product where product_id = {get_id};"
+    cursor = sql().cursor()
+    # sql command
+    query = f"SELECT * FROM food_market.product WHERE product_id = {get_id};"
     cursor.execute(query)
 
+    # get all of products's infos into a dict and return said dict
     product_infos = {}
     for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
         product_infos = {
@@ -62,6 +143,7 @@ def get_product_infos(get_id):
         
 # get product info
 def get_product_info(get_id:int, select):
+    # recall the dict created in function get_product_infos and use 'select' to get a key from the dict
     return get_product_infos(get_id)[select]
 
 
@@ -69,8 +151,11 @@ def get_product_info(get_id:int, select):
 
 def get_all_products_infos(connection):
     cursor = connection.cursor()
-    query = "select product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity from product inner join unit on product.unit_id = unit.unit_id inner join type on product.type_id = type.type_id;"
+    query = "SELECT product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity\
+             FROM product INNER JOIN unit on product.unit_id = unit.unit_id\
+             INNER JOIN type on product.type_id = type.type_id;"
     cursor.execute(query)    
+
     for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
         product_info.append(
             {
@@ -205,11 +290,19 @@ def show_unit(connection):
         print(i)
 
 if __name__ == '__main__':
-    connection = get_sql_connection()
+    connection = sql()
+    '''product check'''
     # print(get_product_infos(1))
     # print(get_product_info(1,"name"))
-    # print(get_all_products_infos(connection))
-    insert_product(11)
+    # print(get_all_products_infos())
+    # insert_product(11)
+
+    '''user check'''
+    # print(get_user_infos(1))
+    # print(get_user_info(1,"password"))
+    # insert_user(4)
+
+
     # show_type(connection)
     #show_unit(connection)
 

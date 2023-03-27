@@ -9,7 +9,7 @@ def get_sql_connection():
             # enter mysql server username
             user='root', 
             # enter mysql server password
-            password='', 
+            password='thai2003', 
             host='127.0.0.1', 
             database='food_market')
     return __cnx
