@@ -3,7 +3,7 @@ import sys
 # enter folder location and change \ to //
 sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//control')
 # access control file
-from sql_connection import *
+from sql_connection import * #type: ignore
 
 #food market class
 class Food_Market:

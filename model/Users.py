@@ -1,5 +1,5 @@
 from Food_market import *
-from sql_connection import *
+
 
 class Users:
     # auto increment id start from last id in database
@@ -12,7 +12,7 @@ class Users:
         Users.last_id += 1
 
         # user input Users and insert into database
-        insert_user(self.id)
+        insert_user(self.id) #type: ignore
 
         # input id in to Food_Market's Users list
         self.depended_class = depended_class

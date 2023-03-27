@@ -12,7 +12,7 @@ class Product:
         Product.last_id += 1
 
         # user input product and insert into database
-        insert_product(self.id)
+        insert_product(self.id)  #type: ignore
 
         # input id in to Food_Market's product list
         self.depended_class = depended_class

@@ -3,7 +3,7 @@ import sys
 # enter folder location and change \ to //
 sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect')
 # access connect(model)
-from connect import get_sql_connection as sql
+from connect import get_sql_connection as sql #type: ignore
 
 
 #những fuction def t để trong """ thì đừng có chạy :)
