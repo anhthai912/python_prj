@@ -8,8 +8,19 @@ from sql_connection import * #type: ignore
 #food market class
 class Food_Market:
     def __init__(self):
-        self.__Products = [1, 2, 3, 4, 5, 6,7 ,8, 9, 10]
-        self.__Users = [1, 2, 3, 4, 5, 6,7 ,8, 9, 10]
+        self.__Products = get_existing_id("product")
+        self.__Users = get_existing_id("user")
+        self.__Sellers = []
+        self.__Customer = []
+
+        # sort existing users into customers or sellers
+        for i in self.__Users:
+            if get_user_info(i, "user_type") == 2:
+                self.__Sellers.append(i)
+            else:
+                self.__Customer.append(i)
+    
+    
 
     def getProducts(self):
         return self.__Products 
@@ -17,4 +28,9 @@ class Food_Market:
     def getUsers(self):
         return self.__Users
     
+    def getSellers(self):
+        return self.__Sellers
+    
+    def getCustomer(self):
+        return self.__Customer
     

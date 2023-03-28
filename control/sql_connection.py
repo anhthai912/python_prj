@@ -13,6 +13,18 @@ person_info = []
 store_creator_info = []
 seller_info = []
 
+
+
+def get_existing_id(type: str):
+    # find the amount of "type" (users, products,...) already in the database
+    cursor = sql().cursor()
+    query = f"SELECT {type}_id FROM food_market.{type}s"
+    cursor.execute(query)
+    result_set = cursor.fetchall()  # fetch all rows of result set
+    id_list = [int(row[0]) for row in result_set]  # create list of type_id integers
+    return id_list
+
+
 #                                   USERS
 # insert user
 def insert_user(id: int):
@@ -24,7 +36,7 @@ def insert_user(id: int):
     user_name = str(input("Enter user name: "))
     password = str(input("Enter password: "))
     gender = str(input("Enter gender: "))
-    phone_number = int(input("Enter phone numer: "))
+    phone_number = int(input("Enter phone number: "))
     address = str(input("Enter address: "))
     user_type = int(input("You are a 1.Customer   2.Seller: "))
 
@@ -91,7 +103,6 @@ def get_all_users_infos():
 '''
 
 
-
 #                                   PRODUCT
 #insert product
 def insert_product(id: int):
@@ -109,7 +120,7 @@ def insert_product(id: int):
     description = str(input("Enter the product's description: "))
 
     # adding product into database
-    query = ("INSERT INTO product (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)\
+    query = ("INSERT INTO products (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)\
              VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
     data = (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)
     cursor.execute(query, data)
@@ -120,7 +131,7 @@ def insert_product(id: int):
 def get_product_infos(get_id):
     cursor = sql().cursor()
     # sql command
-    query = f"SELECT * FROM food_market.product WHERE product_id = {get_id};"
+    query = f"SELECT * FROM food_market.products WHERE product_id = {get_id};"
     cursor.execute(query)
 
     # get all of products's infos into a dict and return said dict
@@ -149,11 +160,11 @@ def get_product_info(get_id:int, select):
 
 
 
-def get_all_products_infos(connection):
-    cursor = connection.cursor()
-    query = "SELECT product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity\
-             FROM product INNER JOIN unit on product.unit_id = unit.unit_id\
-             INNER JOIN type on product.type_id = type.type_id;"
+def get_all_products_infos():
+    cursor = sql().cursor()
+    query = "SELECT products.product_id, products.name, type.type_name, products.price_per_unit, unit.unit_name, products.quantity\
+             FROM products INNER JOIN unit on products.unit_id = unit.unit_id\
+             INNER JOIN type on products.type_id = type.type_id;"
     cursor.execute(query)    
 
     for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
@@ -174,26 +185,19 @@ def get_all_products_infos(connection):
     return product_info
 
 
-"""def get_person_info(connection):
-    cursor = connection.cursor()
-    query = "select person.person_id, person.first_name, person.last_name, person_type.person_type_name, person.address, person.phone_number from person inner join person_type on person.person_type_id = person_type.person_type_id;"
+# delete a product
+def delete_product(product_id: int):
+    cursor = sql().cursor()
+    query = f"DELETE FROM products WHERE product_id = {product_id};"
     cursor.execute(query)
-    for (person_id, first_name, last_name, person_type_name, address, phone_number) in cursor:
-        person_info.append(
-            {
-                'person_id': person_id,
-                'first_name': first_name,
-                'last_name': last_name,
-                'person_type_name': person_type_name,
-                'address': address,
-                'phone_number': phone_number,
-            }
-        )
-    return person_info
-"""
+    sql().commit()
 
-def get_seller_info(connection):
-    cursor = connection.cursor()
+
+
+#                                   SELLER
+
+def get_seller_info():
+    cursor = sql().cursor()
     query = "select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller';"
     cursor.execute(query)
     for (full_name, user_name, gender, phone_number, address) in cursor:
@@ -208,82 +212,24 @@ def get_seller_info(connection):
         )
     return seller_info
 
-def add_seller(connection):
-    cursor = connection.cursor()
+def add_seller():
+    cursor = sql().cursor()
     query = ("insert into seller (seller_full_name, seller_user_name, seller_gender, seller_phone_number, seller_address) select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller' and users.user_id = (select max(users.user_id) from users);")
     cursor.execute(query)
-    connection.commit()
-
-"""def get_store_creator_info(connection):
-    cursor = connection.cursor()
-    query = "select first_name, last_name, address, phone_number from person where person_type_id = 1;"
-    cursor.execute(query)
-    for (person_id, first_name, last_name, address, phone_number) in cursor:
-        store_creator_info.append(
-            {
-                'person_id': person_id,
-                'first_name': first_name,
-                'last_name': last_name,
-                'address': address,
-                'phone_number': phone_number,
-            }
-        )
-    return store_creator_info
-"""
-"""def insert_person(connection):
-    cursor = connection.cursor()
-
-    first_name = str(input("Enter your first name: "))
-    last_name = str(input("Enter your last name: "))
-    person_type_id = int(input("Enter your id (1 if you are a seller, 2 if you are a customer): "))
-    address = str(input("Enter your address: "))
-    phone_number = int(input("Enter your phone number: "))
-    
-    query = ("insert into person (first_name, last_name, person_type_id, address, phone_number) value (%s, %s, %s, %s, %s);")
-    data = (first_name, last_name, person_type_id, address, phone_number)
-    cursor.execute(query, data)
-    connection.commit()
-    if person_type_id == 1:
-        add_creator(connection)
-    else:
-        pass 
-
-def add_creator(connection):
-    cursor = connection.cursor()
-    query = ("insert into creator (first_name, last_name, address, phone_number) select first_name, last_name, address, phone_number from person where person.person_type_id = 1 and person.person_id = (select max(person.person_id) from person);")
-    cursor.execute(query)
-    connection.commit()
-"""
-"""# do not use this function :)
-def delete_person(connection):
-    cursor = connection.cursor()
-    first_name = str(input("Enter first name: "))
-    last_name = str(input("Enter last name: "))
-    query = ("DELETE FROM person where first_name = %s and last_name = %s;")
-    data = (first_name, last_name,)
-    cursor.execute(query, data)
-    connection.commit()"""
+    sql().commit()
 
 
     
-"""# do not use this function :)
-def delete_product(connection):
-    cursor = connection.cursor()
-    name = str(input("Enter the product's name: "))
-    query = ("DELETE FROM product where name = %s;")
-    data = (name,)
-    cursor.execute(query, data)
-    connection.commit()"""
 
-def show_type(connection):
-    cursor = connection.cursor()
+def show_type():
+    cursor = sql().cursor()
     query = ("SELECT * FROM food_market.type;")
     cursor.execute(query)
     for i in cursor:
         print(i)
 
-def show_unit(connection):
-    cursor = connection.cursor()
+def show_unit():
+    cursor = sql().cursor()
     query = ("SELECT * FROM food_market.unit;")
     cursor.execute(query)
     for i in cursor:
@@ -296,15 +242,17 @@ if __name__ == '__main__':
     # print(get_product_info(1,"name"))
     # print(get_all_products_infos())
     # insert_product(11)
+    delete_product(16)
 
     '''user check'''
+    # print(get_existing_id("user")
     # print(get_user_infos(1))
-    # print(get_user_info(1,"password"))
+    # print(get_user_info(1,"id"))
     # insert_user(4)
 
 
-    # show_type(connection)
-    #show_unit(connection)
+    # show_type()
+    #show_unit()
 
     """select max(person_id) from person;
     alter table person auto_increment = 11;"""

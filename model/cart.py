@@ -1,3 +1,5 @@
+from Food_market import *
+
 class Cart:
     def __init__(self, customer_id: int):
         self.__cart_id = customer_id

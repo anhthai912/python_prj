@@ -10,14 +10,14 @@ import sys
 # enter folder location and change \ to //
 sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect')
 # access py_mainform
-from py_mainform import mainform
+from py_mainform import mainform #type: ignore
 
 root = Tk()
 connection = mysql.connector.connect(
             # enter mysql server username
             user='root', 
             # enter mysql server password
-            password='t', 
+            password='', 
             host='127.0.0.1', 
             database='food_market')
 c = connection.cursor()
