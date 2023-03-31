@@ -31,11 +31,23 @@ class Users:
     # getters
     def get_user_id(self):
         return self.__id
+    
+     # delete user
+    def del_user(self):
+        # temp_name to print the deleted user name after deletion
+        temp_name = get_user_info(self.get_user_id(), "name")
+        # delete user from database
+        delete_user(self.get_user_id())
+        # delete user from list
+        self.depended_class.getusers().remove(self.get_user_id())
+        return f'{temp_name} has been deleted'
 
 a = Food_Market()
 test = Users(a)
 
-print(a.getUsers())
-print(a.getSellers())
-print(a.getCustomer())
-print(get_user_info(test.get_user_id(), "user_type"))
+
+
+# print(a.getUsers())
+# print(a.getSellers())
+# print(a.getCustomer())
+# print(get_user_info(test.get_user_id(), "user_type"))

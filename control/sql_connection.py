@@ -6,15 +6,6 @@ sys.path.insert(1,'D://bi12-year2//advpython//project//python_prj//mysql_connect
 from connect import get_sql_connection as sql #type: ignore
 
 
-#những fuction def t để trong """ thì đừng có chạy :)
-
-product_info = []
-person_info = []
-store_creator_info = []
-seller_info = []
-
-
-
 def get_existing_id(type: str):
     # find the amount of "type" (users, products,...) already in the database
     cursor = sql().cursor()
@@ -55,9 +46,9 @@ def get_user_infos(get_id):
     cursor.execute(query)
 
     # create a dict to store user's infos and return said dict
-    user_infos = {}
+    user_info = {}
     for (user_id, full_name, user_name, password, gender, phone_number, address, type) in cursor:
-        user_infos = {
+        user_info = {
             'id' : user_id,
             'full_name' : full_name,
             'user_name' : user_name,
@@ -68,39 +59,72 @@ def get_user_infos(get_id):
             "user_type" : type
         }
     
-    return user_infos
+    return user_info
 
 # get a specific info from an user
 def get_user_info(get_id: int, select):
     # recall the function get_user_infos to create a dict and use 'select' to get a key from said dict
     return get_user_infos(get_id)[select]
 
-# thg sơn lo nốt cái func này t lười r
-'''
+# get all users infos
 def get_all_users_infos():
     cursor = sql().cursor()
-    query = "SELECT product.product_id, product.name, type.type_name, product.price_per_unit, unit.unit_name, product.quantity\
-             FROM product INNER JOIN unit on product.unit_id = unit.unit_id\
-             INNER JOIN type on product.type_id = type.type_id;"
+    query = "SELECT * FROM users"
     cursor.execute(query)    
 
-    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
-        product_info.append(
+    user_infos = []
+
+    for (user_id, full_name, user_name, password, gender, phone_number, address, type) in cursor:
+        user_infos.append(
             {
-                'product_id': product_id,
-                'name': name,
-                'type_name': type_name,
-                'price_per_unit': price_per_unit,
-                'unit_name': unit_name,
-                'quantity': quantity,
-                'dom': date_of_manufacture,
-                'doe': date_of_expire,
-                'description': description
+            'id' : user_id,
+            'full_name' : full_name,
+            'user_name' : user_name,
+            'password' : password,
+            'gender' : gender,
+            'phone_number' : phone_number,
+            'address' : address,
+            "user_type" : type
             }
         )
+    
+    return user_infos
 
-    return product_info
-'''
+# sort user
+def sort_users(type: str):
+    cursor = sql().cursor()
+    query = f"SELECT * FROM users ORDER BY {type}"
+    cursor.execute(query)
+
+    result_set = cursor.fetchall()
+    sorted_id = [int(row(0)) for row in result_set]
+
+    return sorted_id
+
+# modify users
+def modify_user(id: int, mod_type: str, mod_into):
+    cursor = sql().cursor()
+    query_check = f"SELECT * FROM users WHERE user_id = {id}"
+    cursor.execute(query_check)
+    if len(cursor.fetchall()) == 0:
+        print(f"user ID: {id} does not exist")
+    else:
+        query = f"UPDATE users SET `{mod_type}` = '{mod_into}' WHERE users.user_id = {id}"
+        cursor.execute(query)
+        sql().commit()
+
+# delete an user
+def delete_user(user_id: int):
+    cursor = sql().cursor()
+    query_check = f"SELECT * FROM users WHERE user_id = {user_id}"
+    cursor.execute(query_check)
+    if len(cursor.fetchall()) == 0:
+        print(f"User ID {user_id} does not exist")
+    else:
+        query = f"DELETE FROM users WHERE user_id = {user_id};"
+        cursor.execute(query)
+        sql().commit()
+
 
 
 #                                   PRODUCT
@@ -126,6 +150,15 @@ def insert_product(id: int):
     cursor.execute(query, data)
     sql().commit()
 
+# search products
+def search_products(search: str):
+    cursor = sql().cursor()
+    query = f"SELECT * FROM products WHERE name LIKE BINARY '%{search}%';"
+    cursor.execute(query)
+    
+    result_set = cursor.fetchall()
+    id_list = [int(row[0]) for row in result_set]
+    return id_list
 
 # get all of a product information
 def get_product_infos(get_id):
@@ -135,9 +168,9 @@ def get_product_infos(get_id):
     cursor.execute(query)
 
     # get all of products's infos into a dict and return said dict
-    product_infos = {}
+    product_info = {}
     for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
-        product_infos = {
+        product_info = {
                 'id': product_id,
                 'name': name,
                 'type_name': type_name,
@@ -149,28 +182,26 @@ def get_product_infos(get_id):
                 'description': description
             }
 
-    return product_infos
+    return product_info
     
-        
 # get product info
 def get_product_info(get_id:int, select):
     # recall the dict created in function get_product_infos and use 'select' to get a key from the dict
     return get_product_infos(get_id)[select]
 
-
-
-
+# get all products infos
 def get_all_products_infos():
     cursor = sql().cursor()
-    query = "SELECT products.product_id, products.name, type.type_name, products.price_per_unit, unit.unit_name, products.quantity\
+    query = "SELECT products.product_id, products.name, type.type_name, products.price_per_unit, unit.unit_name, products.quantity, products.date_of_expire, products.date_of_manufacture, products.description\
              FROM products INNER JOIN unit on products.unit_id = unit.unit_id\
              INNER JOIN type on products.type_id = type.type_id;"
     cursor.execute(query)    
 
+    product_infos = []
     for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
-        product_info.append(
+        product_infos.append(
             {
-                'product_id': product_id,
+                'id': product_id,
                 'name': name,
                 'type_name': type_name,
                 'price_per_unit': price_per_unit,
@@ -182,44 +213,68 @@ def get_all_products_infos():
             }
         )
 
-    return product_info
+    return product_infos
 
+# sort products
+def sort_products(type: str):
+    cursor = sql().cursor()
+    query = f"SELECT * FROM products ORDER BY {type}"
+    cursor.execute(query)
+
+    result_set = cursor.fetchall()
+    sorted_id = [int(row[0]) for row in result_set]
+    
+    return sorted_id 
+    
+# modify products
+def modify_product(id: int, mod_type: str, mod_into):
+    cursor = sql().cursor()
+    query_check = f"SELECT * FROM products WHERE product_id = {id}"
+    cursor.execute(query_check)
+    if len(cursor.fetchall()) == 0:
+        print(f"Product ID: {id} does not exist")
+    else:
+        query = f"UPDATE products SET `{mod_type}` = '{mod_into}' WHERE products.product_id = {id}"
+        cursor.execute(query)
+        sql().commit()
 
 # delete a product
 def delete_product(product_id: int):
     cursor = sql().cursor()
-    query = f"DELETE FROM products WHERE product_id = {product_id};"
-    cursor.execute(query)
-    sql().commit()
+    query_check = f"SELECT * FROM products WHERE product_id = {product_id}"
+    cursor.execute(query_check)
+    if len(cursor.fetchall()) == 0:
+        print(f"Product ID: {product_id} does not exist")
+    else:
+        query = f"DELETE FROM products WHERE product_id = {product_id};"
+        cursor.execute(query)
+        sql().commit()
 
 
 
 #                                   SELLER
 
-def get_seller_info():
-    cursor = sql().cursor()
-    query = "select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller';"
-    cursor.execute(query)
-    for (full_name, user_name, gender, phone_number, address) in cursor:
-        seller_info.append(
-            {
-                'full_name': full_name,
-                'user_name': user_name,
-                'gender': gender,
-                'phone_number': phone_number,
-                'address': address,
-            }
-        )
-    return seller_info
+# def get_seller_info():
+#     cursor = sql().cursor()
+#     query = "select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller';"
+#     cursor.execute(query)
+#     for (full_name, user_name, gender, phone_number, address) in cursor:
+#         seller_info.append(
+#             {
+#                 'full_name': full_name,
+#                 'user_name': user_name,
+#                 'gender': gender,
+#                 'phone_number': phone_number,
+#                 'address': address,
+#             }
+#         )
+#     return seller_info
 
-def add_seller():
-    cursor = sql().cursor()
-    query = ("insert into seller (seller_full_name, seller_user_name, seller_gender, seller_phone_number, seller_address) select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller' and users.user_id = (select max(users.user_id) from users);")
-    cursor.execute(query)
-    sql().commit()
-
-
-    
+# def add_seller():
+    # cursor = sql().cursor()
+    # query = ("insert into seller (seller_full_name, seller_user_name, seller_gender, seller_phone_number, seller_address) select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller' and users.user_id = (select max(users.user_id) from users);")
+    # cursor.execute(query)
+    # sql().commit()
 
 def show_type():
     cursor = sql().cursor()
@@ -242,17 +297,18 @@ if __name__ == '__main__':
     # print(get_product_info(1,"name"))
     # print(get_all_products_infos())
     # insert_product(11)
-    delete_product(16)
+    # delete_product(12)
+    # print(sort_products('name'))
+    # print(modify_product(6, 'quantity', 60))
+    # print(search_products("o"))
 
     '''user check'''
     # print(get_existing_id("user")
     # print(get_user_infos(1))
     # print(get_user_info(1,"id"))
     # insert_user(4)
+    # delete_user(19)
 
 
     # show_type()
     #show_unit()
-
-    """select max(person_id) from person;
-    alter table person auto_increment = 11;"""

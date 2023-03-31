@@ -16,22 +16,35 @@ class Product:
 
         # input id in to Food_Market's product list
         self.depended_class = depended_class
-        self.depended_class.getProducts().append(self.__id)        
+        self.depended_class.getProducts().append(self.__id)
+
+        # product's condition(available or not)
+        self.__condition = 1        
     
     # getters
     def get_product_id(self):
         return self.__id
+    def get_condition(self):
+        return self.__condition
     
     # delete product
     def del_product(self):
         # temp_name to print the deleted product name after deletion
-        temp_name = get_product_info(self.get_product_id(), "name")
+        temp_name = get_product_info(self.__id, "name")
         # delete product from database
-        delete_product(self.get_product_id())
+        delete_product(self.__id)
         # delete product from list
-        self.depended_class.getProducts().remove(self.get_product_id())
+        self.depended_class.getProducts().remove(self.__id)
         return f'{temp_name} has been deleted'
     
+    # check product condition
+    def condition_check(self):
+        if get_product_info(self.__id, 'quantity') > 0:
+            self.__condition = 1
+            return self.__condition
+        else:
+            self.__condition = 0
+            return self.__condition
     
 a = Food_Market()
     

@@ -1,2 +1,2 @@
-
-        temp_name = get_product_info(self.get_product_id, "name")
+print(a.get_Products())
+a.check_out()

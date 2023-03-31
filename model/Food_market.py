@@ -34,3 +34,10 @@ class Food_Market:
     def getCustomer(self):
         return self.__Customer
     
+        
+    
+a = Food_Market()
+
+# print(a.sort_product_by('name'))
+
+    
