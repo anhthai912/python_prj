@@ -1,0 +1,26 @@
+
+		Group 31 - Food Market
+18 Hoang Quoc Viet str., Cau Giay dist., Hanoi
+................................................
+    		  BILL
+
+Customer Name: c
+Contact Number: 41235316356
+Date: 01,04,2023  125429 
+Bill No. 135852
+        
+Product	  Price/unit	  Qty	  Total
+        
+        
+ squid	  23.0	  5	  115.0
+
+	   (Price already include tax)
+
+................................................
+Reference Number                135852
+................................................
+  Tax Invoice will be issued within same day
+................................................
+	THANK YOU AND SEE YOU AGAIN
+        
+        
