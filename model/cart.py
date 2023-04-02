@@ -78,14 +78,14 @@ class Cart:
 
 
 
-x = Food_Market()
+# x = Food_Market()
     
-a = Cart(2,x)
-a.add_to_cart(2, 2)
-a.add_to_cart(3, 20)
-a.add_to_cart(6, 10)
-print(a.get_Products())
-a.check_out()
-print(a.get_Products())
-# a.bill()
+# a = Cart(2,x)
+# a.add_to_cart(2, 2)
+# a.add_to_cart(3, 20)
+# a.add_to_cart(6, 10)
+# print(a.get_Products())
+# a.check_out()
+# print(a.get_Products())
+# # a.bill()
 # a.calculate_cart()

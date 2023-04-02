@@ -4,6 +4,10 @@ from tkinter import ttk, messagebox
 from connect2 import get_sql_connection
 import os
 
+# unified file path
+import os
+script_dir = os.path.dirname("D://bi12-year2/advpython/project/python_prj/")
+
 class sale_class:
     def __init__(self, root):
         self.root = root
@@ -49,13 +53,13 @@ class sale_class:
         self.bill_area.pack(fill=BOTH,expand=1)
         
         #==Image==
-        self.bill_photo=Image.open("C:/Git/python_prj/project_ver2/picture/cashier2.png")
+        self.bill_photo=Image.open(os.path.join(script_dir,"project_ver2/picture/cashier2.png"))
         self.bill_photo=ImageTk.PhotoImage(self.bill_photo)
         
         lbl_image=Label(self.root,image=self.bill_photo,bd=0, bg="lightgrey")
         lbl_image.place(x=835,y=130)
         
-        self.bill_photo2=Image.open("C:/Git/python_prj/project_ver2/picture/bill1.png")
+        self.bill_photo2=Image.open(os.path.join(script_dir,"project_ver2/picture/bill1.png"))
         self.bill_photo2=ImageTk.PhotoImage(self.bill_photo2)
         
         lbl_image2=Label(self.root,image=self.bill_photo2,bd=0, bg="lightgrey")
@@ -68,7 +72,7 @@ class sale_class:
         del self.bill_list[:]
         self.Sales_List.delete(0,END)
         #print(os.listdir('../IMS')) bill1.txt, category.py
-        for i in os.listdir('C:/Git/python_prj/project_ver2/bill'):
+        for i in os.listdir(os.path.join(script_dir,'project_ver2/bill')):
             #print(i.split('.'),i.split('.')[-1])
             if i.split('.')[-1]=='txt':
                 self.Sales_List.insert(END,i)
@@ -79,7 +83,7 @@ class sale_class:
         file_name=self.Sales_List.get(index_)
         # print(file_name)
         self.bill_area.delete('1.0',END)
-        fp=open(f'C:/Git/python_prj/project_ver2/bill/{file_name}','r')
+        fp=open(os.path.join(script_dir,f'project_ver2/bill/{file_name}','r'))
         for i in fp:
             self.bill_area.insert(END,i)
         fp.close()
@@ -89,7 +93,7 @@ class sale_class:
             messagebox.showerror("Error","Invoice no. should be required",parent=self.root)
         else:
             if self.var_invoice.get() in self.bill_list:
-                fp=open(f'C:/Git/python_prj/project_ver2/bill/{self.var_invoice.get()}.txt','r')
+                fp=open(os.path.join(script_dir,f'project_ver2/bill/{self.var_invoice.get()}.txt','r'))
                 self.bill_area.delete('1.0',END)
                 for i in fp:
                    self.bill_area.insert(END,i)

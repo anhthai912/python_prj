@@ -20,7 +20,6 @@ class Food_Market:
             else:
                 self.__Customer.append(i)
     
-    
 
     def getProducts(self):
         return self.__Products 
@@ -36,7 +35,7 @@ class Food_Market:
     
         
     
-a = Food_Market()
+# a = Food_Market()
 
 # print(a.sort_product_by('name'))
 

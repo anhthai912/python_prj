@@ -7,6 +7,19 @@ import time
 import os
 import tempfile
 
+# unified file path
+import os
+script_dir = os.path.dirname("D://bi12-year2/advpython/project/python_prj/")
+
+# connect with sql server
+connection = mysql.connector.connect(
+            # enter mysql server username
+            user='root', 
+            # enter mysql server password
+            password='thai2003', 
+            host='127.0.0.1', 
+            database='prj_ver2')
+        
 class BillClass:
     def __init__(self,root):
         self.root=root
@@ -20,7 +33,7 @@ class BillClass:
         #===TITLE===
         title = Label(self.root, text="Food Market Information Management System", font=("times new roman", 40, "bold"), bg="#010c48", fg="white").place(x=0, y=0, relwidth=1, height=70)
 
-        #self.icon_title=PhotoImage(file="C:/Git/python_prj/food_market/pic.jpg")
+        #self.icon_title=PhotoImage(file=os.path.join(script_dir,"python_prj/food_market/pic.jpg"))
         #title=Label(self.root,text="Inventory Management System",image=self.icon_title,compound=LEFT,font=("times new roman",40,"bold"),bg="#010c48",fg="white",anchor="w",padx=20).place(x=0,y=0,relwidth=1,height=70)
         
         #===BTN_LOGOUT===
@@ -199,32 +212,32 @@ class BillClass:
         btn_generate.place(x=246,y=5,width=160,height=50)
 
         #picture
-        self.pic_1=Image.open("C:/Git/project_ver2/pic_2_2.jpg")
+        self.pic_1=Image.open(os.path.join(script_dir,"project_ver2/picture/pic_2_2.jpg"))
         self.pic_1=ImageTk.PhotoImage(self.pic_1)        
         lbl_image=Label(self.root,image=self.pic_1,bd=0)
         lbl_image.place(x=600, y=73)
 
-        self.pic_2=Image.open("C:/Git/project_ver2/pic3_2.png")        
+        self.pic_2=Image.open(os.path.join(script_dir,"project_ver2/picture/pic3_2.png"))        
         self.pic_2=ImageTk.PhotoImage(self.pic_2)        
         lbl_image2=Label(self.root,image=self.pic_2,bd=0, bg="white")
         lbl_image2.place(x=40, y=73)
 
-        self.pic_3=Image.open("C:/Git/project_ver2/pic4_1.png")        
+        self.pic_3=Image.open(os.path.join(script_dir,"project_ver2/picture/pic4_1.png"))        
         self.pic_3=ImageTk.PhotoImage(self.pic_3)        
         lbl_image3=Label(self.root,image=self.pic_3,bd=0, bg="white")
         lbl_image3.place(x=400, y=73)
 
-        self.pic_4=Image.open("C:/Git/project_ver2/pic7_1.png")        
+        self.pic_4=Image.open(os.path.join(script_dir,"project_ver2/picture/pic7_1.png"))        
         self.pic_4=ImageTk.PhotoImage(self.pic_4)        
         lbl_image4=Label(self.root,image=self.pic_4,bd=0, bg="white")
         lbl_image4.place(x=200, y=73)
 
-        self.pic_5=Image.open("C:/Git/project_ver2/pic5_1.png")        
+        self.pic_5=Image.open(os.path.join(script_dir,"project_ver2/picture/pic5_1.png"))        
         self.pic_5=ImageTk.PhotoImage(self.pic_5)        
         lbl_image5=Label(self.root,image=self.pic_5,bd=0, bg="white")
         lbl_image5.place(x=1070, y=73)
 
-        self.pic_6=Image.open("C:/Git/project_ver2/pic6_1.png")        
+        self.pic_6=Image.open(os.path.join(script_dir,"project_ver2/picture/pic6_1.png"))        
         self.pic_6=ImageTk.PhotoImage(self.pic_6)        
         lbl_image6=Label(self.root,image=self.pic_6,bd=0, bg="white")
         lbl_image6.place(x=1300, y=73)
@@ -237,10 +250,10 @@ class BillClass:
 #==============functions===================================
 
     def show(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        #connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
         cursor = connection.cursor()
         try:            
-            cursor.execute("select * from product")
+            cursor.execute("SELECT * FROM products")
             rows = cursor.fetchall()
             self.product_Table.delete(*self.product_Table.get_children())
             for row in rows:
@@ -251,14 +264,14 @@ class BillClass:
 
 
     def search(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        #connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
         cursor = connection.cursor()        
         try:
             if self.var_search.get()=="":
                 messagebox.showerror("Error", "Input required", parent = self.root)
             else:            
                 #cursor.execute("select * from product where %s = %s;",(str(self.var_searchby.get().strip()),self.var_searchtxt.get().strip()))
-                cursor.execute("select * from product where product_name = %s;",(self.var_search.get(),))
+                cursor.execute("SELECT * FROM products WHERE product_name = %s;",(self.var_search.get(),))
                 rows = cursor.fetchall()
                 if len(rows)!=0:
                     self.product_Table.delete(*self.product_Table.get_children())
@@ -376,7 +389,7 @@ class BillClass:
             #Bill bottom
             self.bill_bottom()
             
-            fp = open(f'C:/Git/project_ver2/bill/{str(self.invoice)}.txt','w')
+            fp = open(os.path.join(script_dir,f'project_ver2/bill/{str(self.invoice)}.txt','w'))
             fp.write(self.txt_bill_area.get('1.0',END))
             fp.close()
             messagebox.showinfo("Saved", "Bill has been generated", parent = self.root)
@@ -420,7 +433,7 @@ Reference Number                {str(self.invoice)}
 
 
     def bill_middle(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        #connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
         cursor = connection.cursor()        
         try:
             for row in self.cart_list:
@@ -432,7 +445,7 @@ Reference Number                {str(self.invoice)}
                 price_per_unit = str(float(row[4])/int(row[5]))
                 self.txt_bill_area.insert(END,"\n "+name+"\t\t "+price_per_unit+"\t\t "+qty+"\t "+str(price))
                 quantity = int(self.var_stock.get()) - int(qty)
-                cursor.execute("update product set product_quantity = %s where product_id = %s;",(quantity, product_id))
+                cursor.execute("UPDATE products SET product_quantity = %s WHERE product_id = %s;",(quantity, product_id))
                 connection.commit()
             connection.close()
             self.show()

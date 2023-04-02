@@ -9,10 +9,10 @@ from connect import get_sql_connection as sql #type: ignore
 def get_existing_id(type: str):
     # find the amount of "type" (users, products,...) already in the database
     cursor = sql().cursor()
-    query = f"SELECT {type}_id FROM food_market.{type}s"
+    query = f"SELECT {type}_id FROM prj_ver2.{type}s"
     cursor.execute(query)
     result_set = cursor.fetchall()  # fetch all rows of result set
-    id_list = [int(row[0]) for row in result_set]  # create list of type_id integers
+    id_list = [int(row[0]) for row in result_set]  # create list of product_type integers
     return id_list
 
 
@@ -42,7 +42,7 @@ def insert_user(id: int):
 def get_user_infos(get_id):
     cursor = sql().cursor()
     # sql command
-    query = f"SELECT * FROM food_market.users WHERE user_id ={get_id}"
+    query = f"SELECT * FROM prj_ver2.users WHERE user_id ={get_id}"
     cursor.execute(query)
 
     # create a dict to store user's infos and return said dict
@@ -129,31 +129,32 @@ def delete_user(user_id: int):
 
 #                                   PRODUCT
 #insert product
-def insert_product(id: int):
+def insert_product(id: int, seller_id: int):
     cursor = sql().cursor()
 
     # product information
     product_id = id
-    name = str(input("Enter the product's name: "))
-    type_id = int(input("Enter the product's type id: "))
-    price_per_unit = float(input("Enter the product's price per unit: "))
-    unit_id = int(input("Enter the product's unit id: "))
-    quantity = int(input("Enter the product's quantity: "))
-    date_of_manufacture = str(input("Enter the product's date of manufacture (format: yyyy-mm-dd): "))
-    date_of_expire = str(input("Enter the product's date of expire (format: yyyy-mm-dd): "))
-    description = str(input("Enter the product's description: "))
+    product_name = str(input("Enter the product's name: "))
+    product_type = int(input("Enter the product's type id: "))
+    product_price = float(input("Enter the product's price: "))
+    product_unit = int(input("Enter the product's unit: "))
+    product_quantity = int(input("Enter the product's product_quantity: "))
+    pro_manu = str(input("Enter the product's date of manufacture (format: yyyy-mm-dd): "))
+    pro_exp = str(input("Enter the product's date of expire (format: yyyy-mm-dd): "))
+    product_description = str(input("Enter the product's description: "))
+    seller_id = seller_id
 
     # adding product into database
-    query = ("INSERT INTO products (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)\
+    query = ("INSERT INTO products (product_id, product_name, product_type, product_price, product_unit, product_quantity, pro_manu, pro_exp, product_description, seller)\
              VALUE (%s, %s, %s, %s, %s, %s, %s, %s, %s);")
-    data = (product_id, name, type_id, price_per_unit, unit_id, quantity, date_of_manufacture, date_of_expire, description)
+    data = (product_id, product_name, product_type, product_price, product_unit, product_quantity, pro_manu, pro_exp, product_description, seller_id)
     cursor.execute(query, data)
     sql().commit()
 
 # search products
 def search_products(search: str):
     cursor = sql().cursor()
-    query = f"SELECT * FROM products WHERE name LIKE BINARY '%{search}%';"
+    query = f"SELECT * FROM products WHERE product_name LIKE BINARY '%{search}%';"
     cursor.execute(query)
     
     result_set = cursor.fetchall()
@@ -164,22 +165,23 @@ def search_products(search: str):
 def get_product_infos(get_id):
     cursor = sql().cursor()
     # sql command
-    query = f"SELECT * FROM food_market.products WHERE product_id = {get_id};"
+    query = f"SELECT * FROM prj_ver2.products WHERE product_id = {get_id};"
     cursor.execute(query)
 
     # get all of products's infos into a dict and return said dict
     product_info = {}
-    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
+    for (product_id, product_name, product_type, product_price, product_unit, product_quantity, pro_manu, pro_exp, product_description, seller) in cursor:
         product_info = {
                 'id': product_id,
-                'name': name,
-                'type_name': type_name,
-                'price_per_unit': price_per_unit,
-                'unit_name': unit_name,
-                'quantity': quantity,
-                'dom': date_of_manufacture,
-                'doe': date_of_expire,
-                'description': description
+                'name': product_name,
+                'product_type': product_type,
+                'price': product_price,
+                'unit': product_unit,
+                'quantity': product_quantity,
+                'dom': pro_manu,
+                'doe': pro_exp,
+                'description': product_description,
+                'seller_id': seller
             }
 
     return product_info
@@ -192,24 +194,23 @@ def get_product_info(get_id:int, select):
 # get all products infos
 def get_all_products_infos():
     cursor = sql().cursor()
-    query = "SELECT products.product_id, products.name, type.type_name, products.price_per_unit, unit.unit_name, products.quantity, products.date_of_expire, products.date_of_manufacture, products.description\
-             FROM products INNER JOIN unit on products.unit_id = unit.unit_id\
-             INNER JOIN type on products.type_id = type.type_id;"
+    query = "SELECT * FROM products"
     cursor.execute(query)    
 
     product_infos = []
-    for (product_id, name, type_name, price_per_unit, unit_name, quantity, date_of_manufacture, date_of_expire, description) in cursor:
+    for (product_id, product_name, product_type, product_price, product_unit, product_quantity, pro_manu, pro_exp, product_description, seller) in cursor:
         product_infos.append(
             {
                 'id': product_id,
-                'name': name,
-                'type_name': type_name,
-                'price_per_unit': price_per_unit,
-                'unit_name': unit_name,
-                'quantity': quantity,
-                'dom': date_of_manufacture,
-                'doe': date_of_expire,
-                'description': description
+                'name': product_name,
+                'product_type': product_type,
+                'price': product_price,
+                'unit': product_unit,
+                'quantity': product_quantity,
+                'dom': pro_manu,
+                'doe': pro_exp,
+                'description': product_description,
+                'seller_id': seller
             }
         )
 
@@ -254,38 +255,17 @@ def delete_product(product_id: int):
 
 #                                   SELLER
 
-# def get_seller_info():
-#     cursor = sql().cursor()
-#     query = "select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller';"
-#     cursor.execute(query)
-#     for (full_name, user_name, gender, phone_number, address) in cursor:
-#         seller_info.append(
-#             {
-#                 'full_name': full_name,
-#                 'user_name': user_name,
-#                 'gender': gender,
-#                 'phone_number': phone_number,
-#                 'address': address,
-#             }
-#         )
-#     return seller_info
-
-# def add_seller():
-    # cursor = sql().cursor()
-    # query = ("insert into seller (seller_full_name, seller_user_name, seller_gender, seller_phone_number, seller_address) select full_name, user_name, gender, phone_number, address from users where users.type = 'Seller' and users.user_id = (select max(users.user_id) from users);")
-    # cursor.execute(query)
-    # sql().commit()
 
 def show_type():
     cursor = sql().cursor()
-    query = ("SELECT * FROM food_market.type;")
+    query = ("SELECT * FROM prj_ver2.type;")
     cursor.execute(query)
     for i in cursor:
         print(i)
 
 def show_unit():
     cursor = sql().cursor()
-    query = ("SELECT * FROM food_market.unit;")
+    query = ("SELECT * FROM prj_ver2.unit;")
     cursor.execute(query)
     for i in cursor:
         print(i)
@@ -293,21 +273,23 @@ def show_unit():
 if __name__ == '__main__':
     connection = sql()
     '''product check'''
+    # print(get_existing_id("product"))
     # print(get_product_infos(1))
     # print(get_product_info(1,"name"))
     # print(get_all_products_infos())
     # insert_product(11)
     # delete_product(12)
-    # print(sort_products('name'))
-    # print(modify_product(6, 'quantity', 60))
+    # print(sort_products('product_name'))
+    # print(modify_product(6, 'product_quantity', 60))
     # print(search_products("o"))
 
     '''user check'''
-    # print(get_existing_id("user")
+    # print(get_existing_id("user"))
     # print(get_user_infos(1))
     # print(get_user_info(1,"id"))
     # insert_user(4)
     # delete_user(19)
+
 
 
     # show_type()

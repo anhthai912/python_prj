@@ -5,6 +5,20 @@ import mysql.connector
 from tkinter import messagebox
 from connect2 import get_sql_connection
 
+# unified file path
+import os
+script_dir = os.path.dirname("D://bi12-year2/advpython/project/python_prj/")
+
+# connect with sql server
+connection = mysql.connector.connect(
+            # enter mysql server username
+            user='root', 
+            # enter mysql server password
+            password='thai2003', 
+            host='127.0.0.1', 
+            database='prj_ver2')
+        
+
 class modify_product_class:
     def __init__(self, root):
         self.root = root
@@ -88,31 +102,31 @@ class modify_product_class:
         btn_clear = Button(self.root, text = "Clear", command=self.clear, font=("times new roman", 15), bg = "gray", fg = "white", bd =2,cursor = "hand2").place(x=890,y=340,width=90,height=25)
 
 #=======picture
-        self.product_photo1=Image.open("C:/Git/python_prj/project_ver2/picture/seafood2.png")
+        self.product_photo1=Image.open(os.path.join(script_dir,"project_ver2/picture/seafood2.png"))
         self.product_photo1=ImageTk.PhotoImage(self.product_photo1)
         
         lbl_image1=Label(self.root,image=self.product_photo1,bd=0, bg="lightgrey")
         lbl_image1.place(x=220,y=0)
 
-        self.product_photo2=Image.open("C:/Git/python_prj/project_ver2/picture/food1.png")
+        self.product_photo2=Image.open(os.path.join(script_dir,"project_ver2/picture/food1.png"))
         self.product_photo2=ImageTk.PhotoImage(self.product_photo2)
         
         lbl_image2=Label(self.root,image=self.product_photo2,bd=0, bg="lightgrey")
         lbl_image2.place(x=60,y=0)
 
-        self.product_photo3=Image.open("C:/Git/python_prj/project_ver2/picture/meat1.png")
+        self.product_photo3=Image.open(os.path.join(script_dir,"project_ver2/picture/meat1.png"))
         self.product_photo3=ImageTk.PhotoImage(self.product_photo3)
         
         lbl_image3=Label(self.root,image=self.product_photo3,bd=0, bg="lightgrey")
         lbl_image3.place(x=1050,y=3)
 
-        self.product_photo4=Image.open("C:/Git/python_prj/project_ver2/picture/diet1.png")
+        self.product_photo4=Image.open(os.path.join(script_dir,"project_ver2/picture/diet1.png"))
         self.product_photo4=ImageTk.PhotoImage(self.product_photo4)
         
         lbl_image4=Label(self.root,image=self.product_photo4,bd=0, bg="lightgrey")
         lbl_image4.place(x=1160,y=140)
 
-        self.product_photo5=Image.open("C:/Git/python_prj/project_ver2/picture/octopus3.png")
+        self.product_photo5=Image.open(os.path.join(script_dir,"project_ver2/picture/octopus3.png"))
         self.product_photo5=ImageTk.PhotoImage(self.product_photo5)
         
         lbl_image5=Label(self.root,image=self.product_photo5,bd=0, bg="lightgrey")
@@ -160,18 +174,17 @@ class modify_product_class:
         self.product_table.bind("<ButtonRelease-1>", self.get_data)
 #===================================
     def add(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
         cursor = connection.cursor()
         try:
             if self.var_product_name.get()=="":
                 messagebox.showerror("Error", "Product name must be required", parent = self.root)
             else:
-                cursor.execute("select * from product where product_name=%s;", (self.var_product_name.get(),))
+                cursor.execute("SELECT * FROM products WHERE product_name=%s;", (self.var_product_name.get(),))
                 row = cursor.fetchone()
                 if row != None:
                     messagebox.showerror("Error", "This product name already assigned", parent = self.root)
                 else:
-                    cursor.execute("insert into product (product_id,product_name,product_type,pro_manu,pro_exp,product_unit,product_price,product_quantity,product_description,seller) value (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s);", (
+                    cursor.execute("INSERT INTO products (product_id,product_name,product_type,pro_manu,pro_exp,product_unit,product_price,product_quantity,product_description,seller) value (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s);", (
                                             self.var_product_id.get(),
                                             self.var_product_name.get(),
                                             self.var_product_type.get(),
@@ -191,10 +204,10 @@ class modify_product_class:
 
 
     def show(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        
         cursor = connection.cursor()
         try:            
-            cursor.execute("select * from product")
+            cursor.execute("SELECT * FROM products")
             rows = cursor.fetchall()
             self.product_table.delete(*self.product_table.get_children())
             for row in rows:
@@ -222,18 +235,18 @@ class modify_product_class:
 
 
     def update(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        
         cursor = connection.cursor()
         try:
             if self.var_product_id.get()=="":
                 messagebox.showerror("Error", "Product id must be required", parent = self.root)
             else:
-                cursor.execute("select * from product where product_id=%s;", (self.var_product_id.get(),))
+                cursor.execute("SELECT * FROM products WHERE product_id=%s;", (self.var_product_id.get(),))
                 row = cursor.fetchone()
                 if row == None:
                     messagebox.showerror("Error", "Invalid product id", parent = self.root)
                 else:
-                    cursor.execute("update product set product_name = %s,product_type = %s,pro_manu = %s,pro_exp = %s,product_unit = %s,product_price = %s,product_quantity = %s,product_description = %s,seller = %s where product_id = %s;", (
+                    cursor.execute("UPDATE products SET product_name = %s,product_type = %s,pro_manu = %s,pro_exp = %s,product_unit = %s,product_price = %s,product_quantity = %s,product_description = %s,seller = %s where product_id = %s;", (
                                             
                                             self.var_product_name.get(),
                                             self.var_product_type.get(),
@@ -254,20 +267,20 @@ class modify_product_class:
 
 
     def delete(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        
         cursor = connection.cursor()
         try:
             if self.var_product_id.get()=="":
                 messagebox.showerror("Error", "Product id must be required", parent = self.root)
             else:
-                cursor.execute("select * from product where product_id=%s;", (self.var_product_id.get(),))
+                cursor.execute("SELECT * FROM products WHERE product_id=%s;", (self.var_product_id.get(),))
                 row = cursor.fetchone()
                 if row == None:
                     messagebox.showerror("Error", "Invalid product id", parent = self.root)
                 else:
                     op = messagebox.askyesno("Confirm", "Do you really want to delete this product?", parent = self.root)
                     if op == True:
-                        cursor.execute("delete from product where product_id =%s;", (self.var_product_id.get(),))
+                        cursor.execute("DELETE FROM products WHERE product_id =%s;", (self.var_product_id.get(),))
                         #cursor.execute("select max(product_id) from product;")
                         #cursor.execute("alter table product auto_increment = max(product_id)+1;")
                         connection.commit()
@@ -295,15 +308,15 @@ class modify_product_class:
 
 
     def search(self):
-        connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+        
         cursor = connection.cursor()
         
         try:           
             if self.var_searchtxt.get()=="":
                 messagebox.showerror("Error", "Input required", parent = self.root)
             else:            
-                #cursor.execute("select * from product where %s = %s;",(str(self.var_searchby.get().strip()),self.var_searchtxt.get().strip()))
-                cursor.execute("select * from product where product_name = %s;",(self.var_searchtxt.get(),))
+                #cursor.execute("SELECT * FROM products WHERE %s = %s;",(str(self.var_searchby.get().strip()),self.var_searchtxt.get().strip()))
+                cursor.execute("SELECT * FROM products WHERE product_name = %s;",(self.var_searchtxt.get(),))
                 rows = cursor.fetchall()
                 if len(rows)!=0:
                     self.product_table.delete(*self.product_table.get_children())

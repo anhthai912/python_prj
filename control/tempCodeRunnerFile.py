@@ -1,1 +1,1 @@
-{search}
+    print(sort_products('name'))

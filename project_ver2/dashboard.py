@@ -3,6 +3,10 @@ from PIL import Image, ImageTk
 from modify_product import modify_product_class
 from sales import sale_class
 
+# unified file path
+import os
+script_dir = os.path.dirname("D://bi12-year2/advpython/project/python_prj/")
+
 class IMS:
     def __init__(self, root):
         self.root = root
@@ -21,7 +25,7 @@ class IMS:
 
         label_left_menu = Label(left_menu, text = "Menu", font = ("times new roman", 20), bg="#242323", fg="#de108b").pack(side = TOP, fill = X)
         button_modify_product = Button(left_menu, text = ">> Modify",command=self.modify_product, font = ("times new roman", 20, "bold"), bg="#242323", bd=0, cursor="hand2", fg="#de108b").pack(side = TOP, fill = X)
-        self.photo1=Image.open("C:/Git/python_prj/project_ver2/picture/checklist3.png")
+        self.photo1=Image.open(os.path.join(script_dir,"project_ver2/picture/checklist3.png"))
         self.photo1=ImageTk.PhotoImage(self.photo1)
         
         lbl_image2=Label(left_menu,image=self.photo1,bd=0, bg="#242323")
@@ -29,7 +33,7 @@ class IMS:
         #button_cart = Button(left_menu, text = "Cart", font = ("times new roman", 20, "bold"), bg="white", bd=3, cursor="hand2").pack(side = TOP, fill = X)
         button_bill = Button(left_menu, text = ">> Bill", command=self.sale, font = ("times new roman", 20, "bold"), bg="#242323", bd=0, cursor="hand2", fg="#de108b").pack(side = TOP, fill = X)
         
-        self.photo2=Image.open("C:/Git/python_prj/project_ver2/picture/menu1.png")
+        self.photo2=Image.open(os.path.join(script_dir,"project_ver2/picture/menu1.png"))
         self.photo2=ImageTk.PhotoImage(self.photo2)
         
         lbl_image3=Label(left_menu,image=self.photo2,bd=0, bg="#242323")
@@ -37,14 +41,14 @@ class IMS:
 
         button_exit = Button(left_menu, text = ">> Exit", command=exit, font = ("times new roman", 20, "bold"), bg="#242323", bd=0, cursor="hand2", fg="#de108b").pack(side = TOP, fill = X)
 
-        self.photo3=Image.open("C:/Git/python_prj/project_ver2/picture/logout1.png")
+        self.photo3=Image.open(os.path.join(script_dir,"project_ver2/picture/logout1.png"))
         self.photo3=ImageTk.PhotoImage(self.photo3)
         
         lbl_image4=Label(left_menu,image=self.photo3,bd=0, bg="#242323")
         lbl_image4.pack(side=TOP, fill=X)
 
 #main
-        self.photo4=Image.open("C:/Git/python_prj/project_ver2/picture/bg_login_image1.jpg")
+        self.photo4=Image.open(os.path.join(script_dir,"project_ver2/picture/bg_login_image1.jpg"))
         self.photo4=ImageTk.PhotoImage(self.photo4)
         
         lbl_image5=Label(self.root,image=self.photo4,bd=0, bg="#242323")

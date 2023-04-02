@@ -9,8 +9,18 @@ import mysql.connector
 from dashboard import IMS
 from billing import BillClass
 
+# unified file path
+import os
+script_dir = os.path.dirname("D://bi12-year2/advpython/project/python_prj/")
+
 root = Tk()
-connection = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='prj_ver2')
+connection = mysql.connector.connect(
+            # enter mysql server username
+            user='root', 
+            # enter mysql server password
+            password='thai2003', 
+            host='127.0.0.1', 
+            database='food_market')
 c = connection.cursor()
 
 # width and height
@@ -94,7 +104,7 @@ def on_enter6(self):
 def on_leave6(self):
     password_3 = confirmpass_entry_rg.get()
     if password_3 =="":
-        confirmpass_entry_rg.insert(0,"Re-password")
+        confirmpass_entry_rg.insert(0,"Retype password")
 
 def on_enter7(self):
     phone_entry_rg.delete(0, "end")
@@ -113,33 +123,51 @@ def on_leave8(self):
         address_entry_rg.insert(0,"Address")
 
 def hide():
-    open_eye.config(file='C:/Git/python_prj/project_ver2/picture/eye1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/eye1.png")
+    open_eye.config(file=image_path)
+    # open_eye.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/eye1.png')
     password_entry.config(show="*")
     eye_button.config(command=show)
 
 def show():
-    open_eye.config(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/view1.png")
+    open_eye.config(file=image_path)
+    # open_eye.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
     password_entry.config(show="")
     eye_button.config(command=hide)
 
 
 def hide2():
-    open_eye2.config(file='C:/Git/python_prj/project_ver2/picture/eye1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/eye1.png")
+    open_eye2.config(file=image_path)
+    # open_eye2.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/eye1.png')
     password_entry_rg.config(show="*")
     eye_button2.config(command=show2)
 
 def show2():
-    open_eye2.config(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/view1.png")
+    open_eye2.config(file=image_path)
+    # open_eye2.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
     password_entry_rg.config(show="")
     eye_button2.config(command=hide2)
 
 def hide3():
-    open_eye3.config(file='C:/Git/python_prj/project_ver2/picture/eye1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/eye1.png")
+    open_eye3.config(file=image_path)
+    # open_eye3.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/eye1.png')
     confirmpass_entry_rg.config(show="*")
     eye_button3.config(command=show3)
 
 def show3():
-    open_eye3.config(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+    # specify the file path relative to the script directory
+    image_path = os.path.join(script_dir, "project_ver2/picture/view1.png")
+    open_eye3.config(file=image_path)
+    # open_eye3.config(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
     confirmpass_entry_rg.config(show="")
     eye_button3.config(command=hide3)
 
@@ -172,7 +200,11 @@ frame2 = tk.Frame(login_contentframe, height=2, width=370, bg="#de108b")
 password_entry.bind("<FocusIn>", on_enter2)
 password_entry.bind("<FocusOut>", on_leave2)
 
-open_eye = tk.PhotoImage(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+# universal image path for open_eye 1,2,3
+image_path_open_eye = os.path.join(script_dir, "project_ver2/picture/view1.png")
+
+# open_eye = tk.PhotoImage(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
+open_eye = tk.PhotoImage(file = image_path_open_eye)
 
 eye_button = tk.Button(login_contentframe, image=open_eye, bd=0, bg=bgcolor, activebackground=bgcolor, cursor="hand2", command=hide)
 eye_button.place(x=345, y=69)
@@ -264,7 +296,7 @@ username_label_rg = tk.Label(register_contentframe, text='Username:',
                              font=('Verdana',14), fg="#de108b",bg=bgcolor)
 password_label_rg = tk.Label(register_contentframe, text='Password:', 
                              font=('Verdana',14), fg="#de108b",bg=bgcolor)
-confirmpass_label_rg = tk.Label(register_contentframe, text='Re-Password:', 
+confirmpass_label_rg = tk.Label(register_contentframe, text='Retype Password:', 
                                 font=('Verdana',14),fg="#de108b", bg=bgcolor)
 phone_label_rg = tk.Label(register_contentframe, text='Phone:', 
                           font=('Verdana',14), fg="#de108b",bg=bgcolor)
@@ -299,20 +331,22 @@ frame5 = tk.Frame(register_contentframe, height=2, width=370, bg="#de108b")
 password_entry_rg.bind("<FocusIn>", on_enter5)
 password_entry_rg.bind("<FocusOut>", on_leave5)
 
-open_eye2 = tk.PhotoImage(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+open_eye2 = tk.PhotoImage(file = image_path_open_eye)
+# open_eye2 = tk.PhotoImage(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
 
 eye_button2 = tk.Button(register_contentframe, image=open_eye2, bd=0, bg=bgcolor, activebackground=bgcolor, cursor="hand2", command=hide2)
 eye_button2.place(x=345, y=120)
 
 
 confirmpass_entry_rg = tk.Entry(register_contentframe, font=('Verdana',16), width=28, bg=bgcolor, fg="#de108b", border=0)
-confirmpass_entry_rg.insert(0,"Re-password")
+confirmpass_entry_rg.insert(0,"Retype password")
 frame6 = tk.Frame(register_contentframe, height=2, width=370, bg="#de108b")
 
 confirmpass_entry_rg.bind("<FocusIn>", on_enter6)
 confirmpass_entry_rg.bind("<FocusOut>", on_leave6)
 
-open_eye3 = tk.PhotoImage(file='C:/Git/python_prj/project_ver2/picture/view1.png')
+open_eye3 = tk.PhotoImage(file = image_path_open_eye)
+# open_eye3 = tk.PhotoImage(file='D://bi12-year2/advpython/project/python_prj/project_ver2/picture/view1.png')
 
 eye_button3 = tk.Button(register_contentframe, image=open_eye3, bd=0, bg=bgcolor, activebackground=bgcolor, cursor="hand2", command=hide3)
 eye_button3.place(x=345, y=169)
